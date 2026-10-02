@@ -28,6 +28,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-
 .leg{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted);margin-top:10px}
 .leg i{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid;vertical-align:-2px;margin-right:4px}
 .contact{margin-top:12px;text-align:center;font-size:14px}
+.acts{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.btn{padding:10px 16px;border-radius:8px;border:1px solid var(--bd);background:var(--blue-bg);color:var(--blue-fg);font-size:14px;font-weight:600;cursor:pointer}
 </style>
 </head>
 <body>
@@ -57,7 +59,74 @@ var CONTACTO = "Jose Miguel Acosta 3043335770";
   h += '</div><div class="stats"><span>Disponibles: <b>' + (100 - taken) + '</b></span><span>Ocupados: <b>' + taken + '</b></span></div>'
     + '<div class="leg"><span><i class="free"></i>Disponible</span><span><i class="tk"></i>Ocupado</span></div>';
   if (CONTACTO) h += '<div class="contact">Para apartar tu número: <b>' + esc(CONTACTO) + '</b></div>';
+  h += '<div class="acts"><button class="btn" id="dl">Descargar imagen</button><button class="btn" id="sh" style="display:none">Compartir</button></div>';
   document.getElementById("app").innerHTML = h;
+
+  function rr(c, x, y, w, hh, r) {
+    c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + hh, r); c.arcTo(x + w, y + hh, x, y + hh, r);
+    c.arcTo(x, y + hh, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+  }
+  function draw() {
+    var W = 1080, H = 1760, cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    var c = cv.getContext("2d"), FF = 'system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';
+    function tx(s, x, y, size, wt, col, al) {
+      c.font = wt + " " + size + "px " + FF; c.fillStyle = col; c.textAlign = al || "center"; c.textBaseline = "middle"; c.fillText(s, x, y);
+    }
+    c.fillStyle = "#f6f5f1"; c.fillRect(0, 0, W, H);
+    c.fillStyle = "#ffffff"; rr(c, 30, 30, W - 60, H - 60, 28); c.fill();
+    c.strokeStyle = "#d9d7cf"; c.lineWidth = 2; c.stroke();
+    tx("GRAN RIFA - REVANCHA", W / 2, 100, 26, 500, "#5f5e5a");
+    [[70, "#fbefcf", "#6b4a05", "Premio mayor", "$200.000", "2 últimas cifras"],
+     [550, "#e3eefb", "#0f4a85", "Segundo premio", "$50.000", "2 primeras cifras"]].forEach(function(p){
+      c.fillStyle = p[1]; rr(c, p[0], 140, 460, 190, 20); c.fill();
+      tx(p[3], p[0] + 230, 185, 28, 400, p[2]); tx(p[4], p[0] + 230, 245, 64, 700, p[2]); tx(p[5], p[0] + 230, 300, 26, 400, p[2]);
+    });
+    tx("Valor de la boleta", 300, 380, 24, 400, "#5f5e5a"); tx("$5.000", 300, 425, 40, 700, "#1d1d1b");
+    tx("Boletas", 780, 380, 24, 400, "#5f5e5a"); tx("100 (00 al 99)", 780, 425, 40, 700, "#1d1d1b");
+    tx("Juega con el premio mayor de 4 cifras de la Lotería de Medellín", W / 2, 500, 26, 400, "#5f5e5a");
+    if (FECHA) tx("Sorteo: " + FECHA, W / 2, 548, 30, 700, "#1d1d1b");
+    var k, cs = 84.8;
+    for (k = 0; k < 100; k++) {
+      var l = (k < 10 ? "0" : "") + k, t = set[l], x = 80 + (k % 10) * 92.8, y = 600 + Math.floor(k / 10) * 92;
+      c.fillStyle = t ? "#fbe4e4" : "#e6f4ea"; rr(c, x, y, cs, 84, 10); c.fill();
+      c.strokeStyle = t ? "#eba7a7" : "#9fd1ac"; c.lineWidth = 2; c.stroke();
+      tx(l, x + cs / 2, y + 42, 32, 700, t ? "#8a1f1f" : "#17552b");
+      if (t) {
+        var m = c.measureText(l).width;
+        c.strokeStyle = "#8a1f1f"; c.lineWidth = 3; c.beginPath(); c.moveTo(x + cs / 2 - m / 2, y + 42); c.lineTo(x + cs / 2 + m / 2, y + 42); c.stroke();
+      }
+    }
+    tx("Disponibles: " + (100 - taken), 80, 1565, 30, 700, "#1d1d1b", "left");
+    tx("Ocupados: " + taken, 1000, 1565, 30, 700, "#1d1d1b", "right");
+    c.fillStyle = "#e6f4ea"; c.strokeStyle = "#9fd1ac"; c.lineWidth = 2; rr(c, 340, 1612, 26, 26, 5); c.fill(); c.stroke();
+    tx("Disponible", 378, 1626, 26, 400, "#5f5e5a", "left");
+    c.fillStyle = "#fbe4e4"; c.strokeStyle = "#eba7a7"; rr(c, 600, 1612, 26, 26, 5); c.fill(); c.stroke();
+    tx("Ocupado", 638, 1626, 26, 400, "#5f5e5a", "left");
+    if (CONTACTO) tx("Para apartar tu número: " + CONTACTO, W / 2, 1685, 28, 700, "#1d1d1b");
+    return cv;
+  }
+  function toBlob(cb) { draw().toBlob(cb, "image/png"); }
+  document.getElementById("dl").onclick = function () {
+    toBlob(function (b) {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(b); a.download = "rifa-cuadro.png";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+  };
+  try {
+    var probe = new File([new Blob(["x"])], "t.png", { type: "image/png" });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [probe] })) {
+      var sh = document.getElementById("sh"); sh.style.display = "";
+      sh.onclick = function () {
+        toBlob(function (b) {
+          var f = new File([b], "rifa-cuadro.png", { type: "image/png" });
+          navigator.share({ files: [f], title: "Rifa revancha" }).catch(function () {});
+        });
+      };
+    }
+  } catch (e) {}
 })();
 </script>
 </body>
