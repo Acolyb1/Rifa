@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rifa revancha - Lotería de Medellín</title>
+<meta property="og:title" content="Rifa revancha - Lotería de Medellín">
+<meta property="og:description" content="Premio mayor $200.000 y segundo premio $50.000. Mira qué números están disponibles.">
+<style>
+:root{--bg:#f6f5f1;--fg:#1d1d1b;--muted:#5f5e5a;--card:#fff;--bd:#d9d7cf;--free-bg:#e6f4ea;--free-fg:#17552b;--free-bd:#9fd1ac;--tk-bg:#fbe4e4;--tk-fg:#8a1f1f;--tk-bd:#eba7a7;--gold-bg:#fbefcf;--gold-fg:#6b4a05;--blue-bg:#e3eefb;--blue-fg:#0f4a85}
+@media (prefers-color-scheme:dark){:root{--bg:#171716;--fg:#f0eee8;--muted:#a9a79f;--card:#232321;--bd:#3d3c38;--free-bg:#173322;--free-fg:#a7e0b6;--free-bd:#2b6a41;--tk-bg:#3a1c1c;--tk-fg:#f3b3b3;--tk-bd:#7a3535;--gold-bg:#3a2e0d;--gold-fg:#f2d78a;--blue-bg:#14304f;--blue-fg:#a9cff5}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+.wrap{max-width:480px;margin:0 auto;padding:16px 14px 28px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.eyebrow{text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.prizes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.prize{border-radius:10px;padding:10px 6px;text-align:center}
+.prize b{display:block;font-size:24px;font-weight:600}
+.prize span{font-size:12px}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;font-size:13px;color:var(--muted)}
+.info b{display:block;font-size:18px;color:var(--fg)}
+.rule{text-align:center;font-size:13px;color:var(--muted);margin:10px 0 0}
+.grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;margin:14px 0 10px}
+.n{height:34px;min-width:0;border-radius:6px;font:600 12px system-ui,sans-serif;display:flex;align-items:center;justify-content:center;border:1px solid}
+.free{background:var(--free-bg);color:var(--free-fg);border-color:var(--free-bd)}
+.tk{background:var(--tk-bg);color:var(--tk-fg);border-color:var(--tk-bd);text-decoration:line-through;opacity:.9}
+.stats{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.leg{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted);margin-top:10px}
+.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid;vertical-align:-2px;margin-right:4px}
+.contact{margin-top:12px;text-align:center;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card" id="app"></div></div>
+<script>
+/* ===== AQUÍ SE EDITA ===== */
+var OCUPADOS = ["07","08","09","10","12","24","29","46","49","52","53","69","73","79","90"];
+var FECHA = "Viernes 16 de octubre";
+var CONTACTO = "Jose Miguel Acosta 3043335770";
+/* ========================= */
+
+(function(){
+  var set = {}, i, h = "";
+  OCUPADOS.forEach(function(k){ set[k] = 1; });
+  var taken = Object.keys(set).length;
+  function esc(t){ var d = document.createElement("div"); d.textContent = t; return d.innerHTML; }
+  h += '<div class="eyebrow">Gran rifa - revancha</div><div class="prizes">'
+    + '<div class="prize" style="background:var(--gold-bg);color:var(--gold-fg)"><span>Premio mayor</span><b>$200.000</b><span>2 últimas cifras</span></div>'
+    + '<div class="prize" style="background:var(--blue-bg);color:var(--blue-fg)"><span>Segundo premio</span><b>$50.000</b><span>2 primeras cifras</span></div></div>'
+    + '<div class="info"><div>Valor de la boleta<b>$5.000</b></div><div>Boletas<b>100 (00 al 99)</b></div></div>'
+    + '<p class="rule">Juega con el premio mayor de 4 cifras de la Lotería de Medellín'
+    + (FECHA ? '<br>Sorteo: <b>' + esc(FECHA) + '</b>' : '') + '</p><div class="grid">';
+  for (i = 0; i < 100; i++) {
+    var l = (i < 10 ? "0" : "") + i, t = set[l];
+    h += '<div class="n ' + (t ? "tk" : "free") + '" aria-label="' + l + (t ? " ocupado" : " disponible") + '">' + l + '</div>';
+  }
+  h += '</div><div class="stats"><span>Disponibles: <b>' + (100 - taken) + '</b></span><span>Ocupados: <b>' + taken + '</b></span></div>'
+    + '<div class="leg"><span><i class="free"></i>Disponible</span><span><i class="tk"></i>Ocupado</span></div>';
+  if (CONTACTO) h += '<div class="contact">Para apartar tu número: <b>' + esc(CONTACTO) + '</b></div>';
+  document.getElementById("app").innerHTML = h;
+})();
+</script>
+</body>
+</html>
